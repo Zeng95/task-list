@@ -7,9 +7,9 @@ const taskInput = document.querySelector("#task");
 const clearBtn = document.querySelector(".clear-tasks");
 const filterInput = document.querySelector("#filter");
 
-// * Get All Tasks
+// * Get all Tasks from localStorage
 const getTasks = () => {
-  console.log('DOM fully loaded and parsed');
+  console.log("DOM fully loaded and parsed");
   const tasks = JSON.parse(localStorage.getItem("tasks"));
 
   if (tasks.length > 0) {
@@ -26,27 +26,34 @@ const getTasks = () => {
 
       taskItem.appendChild(link);
       taskList.appendChild(taskItem);
-    })
+    });
   }
-}
+};
 
-// * Storage Task
+// * Storage a new Task
 const storeTaskInLocalStorage = (task) => {
   const tasks = JSON.parse(localStorage.getItem("tasks"));
 
   if (!tasks) {
     localStorage.setItem("tasks", JSON.stringify([task]));
+    return true;
   } else if (!tasks.includes(task)) {
     localStorage.setItem("tasks", JSON.stringify([...tasks, task]));
+    return true;
   }
+
+  return false;
 };
 
-// * Add a new task
+// * Add a new Task
 const addTask = (event) => {
   event.preventDefault();
 
   if (taskInput.value) {
-    storeTaskInLocalStorage(taskInput.value);
+    if (!storeTaskInLocalStorage(taskInput.value)) {
+      alert("The task name has already existed!");
+      return;
+    }
 
     const taskItem = document.createElement("li");
     taskItem.className = "collection-item";
@@ -60,10 +67,12 @@ const addTask = (event) => {
     taskList.appendChild(taskItem);
 
     taskInput.value = "";
+  } else {
+    alert("Please input a new task name!");
   }
 };
 
-// * Remove a task
+// * Remove a Task
 const removeTask = (event) => {
   if (event.target.parentElement.classList.contains("delete-item")) {
     if (confirm("Are You Sure?")) {
@@ -72,7 +81,7 @@ const removeTask = (event) => {
   }
 };
 
-// * Clear all tasks
+// * Clear all Tasks
 const clearTasks = () => {
   // taskList.innerHTML = '';
 
@@ -85,7 +94,7 @@ const clearTasks = () => {
   }
 };
 
-// * Filter tasks
+// * Filter Tasks
 const filterTasks = (event) => {
   const text = event.target.value.toLowerCase();
   const allTasks = taskList.querySelectorAll(".collection-item");
@@ -95,12 +104,10 @@ const filterTasks = (event) => {
       taskItem.style.display = "none";
     }
   });
-
-  console.log(result);
 };
 
 const loadEventListeners = () => {
-  window.addEventListener('DOMContentLoaded', getTasks, false);
+  window.addEventListener("DOMContentLoaded", getTasks, false);
   form.addEventListener("submit", addTask, false);
   taskList.addEventListener("click", removeTask, false);
   clearBtn.addEventListener("click", clearTasks, false);
