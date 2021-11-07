@@ -1,17 +1,53 @@
 // * UI variables
 const form = document.querySelector("#task-from");
 
+const taskList = document.querySelector(".collection");
 const taskInput = document.querySelector("#task");
-const filterInput = document.querySelector("#filter");
 
 const clearBtn = document.querySelector(".clear-tasks");
-const taskList = document.querySelector(".collection");
+const filterInput = document.querySelector("#filter");
+
+// * Get All Tasks
+const getTasks = () => {
+  console.log('DOM fully loaded and parsed');
+  const tasks = JSON.parse(localStorage.getItem("tasks"));
+
+  if (tasks.length > 0) {
+    tasks.forEach((task) => {
+      // * Create a list item element
+      const taskItem = document.createElement("li");
+      taskItem.className = "collection-item";
+      taskItem.innerHTML = `<span>${task}</span>`;
+
+      // * Create a new link element
+      const link = document.createElement("a");
+      link.className = "delete-item secondary-content";
+      link.innerHTML = '<i class="fas fa-times"></i>';
+
+      taskItem.appendChild(link);
+      taskList.appendChild(taskItem);
+    })
+  }
+}
+
+// * Storage Task
+const storeTaskInLocalStorage = (task) => {
+  const tasks = JSON.parse(localStorage.getItem("tasks"));
+
+  if (!tasks) {
+    localStorage.setItem("tasks", JSON.stringify([task]));
+  } else if (!tasks.includes(task)) {
+    localStorage.setItem("tasks", JSON.stringify([...tasks, task]));
+  }
+};
 
 // * Add a new task
 const addTask = (event) => {
   event.preventDefault();
 
   if (taskInput.value) {
+    storeTaskInLocalStorage(taskInput.value);
+
     const taskItem = document.createElement("li");
     taskItem.className = "collection-item";
     taskItem.innerHTML = `<span>${taskInput.value}</span>`;
@@ -64,6 +100,7 @@ const filterTasks = (event) => {
 };
 
 const loadEventListeners = () => {
+  window.addEventListener('DOMContentLoaded', getTasks, false);
   form.addEventListener("submit", addTask, false);
   taskList.addEventListener("click", removeTask, false);
   clearBtn.addEventListener("click", clearTasks, false);
