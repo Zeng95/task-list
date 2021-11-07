@@ -86,7 +86,7 @@ const removeTask = (event) => {
 
 const filterTasks = (event) => {
   const text = event.target.value.toLowerCase();
-  const allTasks = taskList.querySelectorAll(".collection-item");
+  const allTasks = Array.from(taskList.children);
 
   allTasks.forEach((taskItem) => {
     if (taskItem.firstElementChild.textContent.toLowerCase().includes(text)) {
@@ -98,6 +98,12 @@ const filterTasks = (event) => {
 };
 
 const clearTasks = () => {
+  const tasks = JSON.parse(localStorage.getItem("tasks"));
+
+  if (!tasks) {
+    return;
+  }
+
   // taskList.innerHTML = '';
 
   // while (taskList.firstChild) {
