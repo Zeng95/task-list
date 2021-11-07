@@ -56,7 +56,7 @@ const addTask = (event) => {
       return;
     }
 
-    createTaskElement(taskInput.value.toLowerCase())
+    createTaskElement(taskInput.value.toLowerCase());
     taskInput.value = "";
   } else {
     alert("Please input a new task name!");
@@ -89,7 +89,9 @@ const filterTasks = (event) => {
   const allTasks = taskList.querySelectorAll(".collection-item");
 
   allTasks.forEach((taskItem) => {
-    if (!taskItem.firstElementChild.textContent.toLowerCase().includes(text)) {
+    if (taskItem.firstElementChild.textContent.toLowerCase().includes(text)) {
+      taskItem.style.display = "block";
+    } else {
       taskItem.style.display = "none";
     }
   });
